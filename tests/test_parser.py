@@ -50,3 +50,21 @@ def test_invalid_yaml_raises_parse_error(tmp_path: Path) -> None:
 
     with pytest.raises(ComposeParseError, match="Invalid YAML"):
         parse_compose_file(compose)
+
+
+def test_parse_service_with_empty_deploy_resources(tmp_path: Path) -> None:
+    compose = tmp_path / "compose.yml"
+    compose.write_text(
+        """
+services:
+  app:
+    image: nginx:alpine
+    deploy:
+      resources:
+""",
+        encoding="utf-8",
+    )
+
+    service = parse_compose_file(compose)[0]
+
+    assert service.gpu_settings == []
