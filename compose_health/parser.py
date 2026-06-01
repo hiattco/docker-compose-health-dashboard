@@ -119,13 +119,9 @@ def _gpu_settings(config: dict[str, Any], environment: dict[str, str | None]) ->
     for key in ("gpus", "runtime"):
         if key in config:
             settings.append(f"{key}: {config[key]}")
-    reservations = (
-        config.get("deploy", {})
-        .get("resources", {})
-        .get("reservations", {})
-        if isinstance(config.get("deploy"), dict)
-        else {}
-    )
+    deploy = config.get("deploy")
+    resources = deploy.get("resources", {}) if isinstance(deploy, dict) else {}
+    reservations = resources.get("reservations", {}) if isinstance(resources, dict) else {}
     if isinstance(reservations, dict) and "devices" in reservations:
         settings.append(f"deploy.resources.reservations.devices: {reservations['devices']}")
     return settings
