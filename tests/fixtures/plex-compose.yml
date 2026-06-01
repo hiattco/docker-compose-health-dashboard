@@ -1,0 +1,23 @@
+services:
+  plex:
+    image: plexinc/pms-docker
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:32400/identity"]
+      interval: 30s
+    ports:
+      - "32400:32400"
+    volumes:
+      - /mnt/media:/media:ro
+      - plex-config:/config
+    environment:
+      NVIDIA_VISIBLE_DEVICES: all
+      PLEX_CLAIM: claim-token
+    networks:
+      - media
+
+volumes:
+  plex-config:
+
+networks:
+  media:
